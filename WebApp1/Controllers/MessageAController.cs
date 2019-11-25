@@ -24,7 +24,7 @@ namespace WebApp1.Controllers
                    new MessageAddOptions
                    {
                        Data = messageAOptions,
-                       Type = "funcapp1-messagea",
+                       Type = "webapp1-messagea",
                        Subject = "MessageA.Added"
                    };
 

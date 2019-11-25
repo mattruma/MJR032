@@ -18,3 +18,34 @@ Add the following code snippet to your `local.settings.json` file.
   }
 }
 ```
+
+## WebApp1
+
+Add a `appsettings.Development.json` file.
+
+Add the following code snippet to your `appsettings.Development.json` file.
+
+```
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "EventGridMessageAddOptions": {
+    "TopicKey": "EVENT_GRID_TOPIC_KEY",
+    "TopicEndpoint": "EVENT_GRID_TOPIC_ENDPOINT"
+  },
+  "EventHubMessageAddOptions": {
+    "ConnectionString": "EVENT_HUB_CONNECTION_STRING"
+  },
+  "ServiceBusMessageAddOptions": {
+    "ConnectionString": "SERVICE_BUS_CONNECTION_STRING"
+  },
+  "StorageQueueMessageAddOptions": {
+    "ConnectionString": "STORAGE_QUEUE_CONNECTION_STRING"
+  }
+}
+```

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace WebApp1
 {
@@ -25,7 +19,66 @@ namespace WebApp1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            // Settings for event grid
+
+            var eventGridMessageAddOptions =
+                new EventGridMessageAddOptions
+                {
+                    TopicEndpoint = Configuration["EventGridMessageAddOptions:TopicEndpoint"],
+                    TopicKey = Configuration["EventGridMessageAddOptions:TopicKey"]
+                };
+
+            services
+                .AddSingleton(eventGridMessageAddOptions);
+
+            // Settings for event hub
+
+            var eventHubMessageAddOptions =
+                new EventHubMessageAddOptions
+                {
+                    ConnectionString = Configuration["EventHubMessageAddOptions:ConnectionString"]
+                };
+
+            services
+                .AddSingleton(eventHubMessageAddOptions);
+
+            // Settings for service bus
+
+            var serviceBusMessageSenderOptions =
+                new ServiceBusMessageAddOptions
+                {
+                    ConnectionString = Configuration["ServiceBusMessageAddOptions:ConnectionString"]
+                };
+
+            services
+                .AddSingleton(serviceBusMessageSenderOptions);
+
+            // Settings for storage queue
+
+            var storageQueueMessageAddOptions =
+                new StorageQueueMessageAddOptions
+                {
+                    ConnectionString = Configuration["StorageQueueMessageAddOptions:ConnectionString"]
+                };
+
+            services
+                .AddSingleton(storageQueueMessageAddOptions);
+
+            // Choose your add message service
+
+            services
+                .AddSingleton<IMessageAdd, EventGridMessageAdd>();
+            //services
+            //    .AddSingleton<IMessageAdd, EventHubMessageAdd>();
+            //services
+            //    .AddSingleton<IMessageAdd, ServiceBusMessageAdd>();
+            //services
+            //    .AddSingleton<IMessageAdd, StorageQueueMessageAdd>();
+            //services
+            //    .AddSingleton<IMessageAdd, FakeMessageAdd>();
+
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

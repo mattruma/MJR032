@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Common;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace WebApp1.Controllers
 {
@@ -6,9 +8,30 @@ namespace WebApp1.Controllers
     [ApiController]
     public class MessageBController : ControllerBase
     {
-        [HttpPost]
-        public void Post([FromBody] string value)
+        private readonly IMessageAdd _messageAdd;
+
+        public MessageBController(
+            IMessageAdd messageAdd)
         {
+            _messageAdd = messageAdd;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAsync(
+            [FromBody] MessageBOptions messageBOptions)
+        {
+
+            var messageAddOptions =
+                new MessageAddOptions
+                {
+                    Data = messageBOptions,
+                    Type = "funcapp1-messageb",
+                    Subject = "MessageB.Added"
+                };
+
+            await _messageAdd.AddAsync(messageAddOptions);
+
+            return new OkObjectResult(messageAddOptions);
         }
     }
 }

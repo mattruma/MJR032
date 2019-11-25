@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FuncApp1
+namespace Common
 {
     public class MessageAOptions
     {

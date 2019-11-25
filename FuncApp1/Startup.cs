@@ -13,52 +13,63 @@ namespace FuncApp1
         public override void Configure(
             IFunctionsHostBuilder builder)
         {
-            var eventGridMessageAddOptions =
-                new EventGridMessageAddOptions();
+            // Settings for event grid
 
-            eventGridMessageAddOptions.TopicEndpoint =
-                Environment.GetEnvironmentVariable("EventGridMessageAddOptions:TopicEndpoint");
-            eventGridMessageAddOptions.TopicKey =
-                Environment.GetEnvironmentVariable("EventGridMessageAddOptions:TopicKey");
+            var eventGridMessageAddOptions =
+                new EventGridMessageAddOptions
+                {
+                    TopicEndpoint = Environment.GetEnvironmentVariable("EventGridMessageAddOptions:TopicEndpoint"),
+                    TopicKey = Environment.GetEnvironmentVariable("EventGridMessageAddOptions:TopicKey")
+                };
 
             builder.Services
                 .AddSingleton(eventGridMessageAddOptions);
 
-            var eventHubMessageAddOptions =
-                 new EventHubMessageAddOptions();
+            // Settings for event hub
 
-            eventHubMessageAddOptions.ConnectionString =
-                Environment.GetEnvironmentVariable("EventHubMessageAddOptions:ConnectionString");
+            var eventHubMessageAddOptions =
+                new EventHubMessageAddOptions
+                {
+                    ConnectionString = Environment.GetEnvironmentVariable("EventHubMessageAddOptions:ConnectionString")
+                };
 
             builder.Services
                 .AddSingleton(eventHubMessageAddOptions);
 
-            var storageQueueMessageAddOptions =
-                new StorageQueueMessageAddOptions();
-
-            storageQueueMessageAddOptions.ConnectionString =
-                Environment.GetEnvironmentVariable("StorageQueueMessageAddOptions:ConnectionString");
-
-            builder.Services
-                .AddSingleton(storageQueueMessageAddOptions);
+            // Settings for service bus
 
             var serviceBusMessageSenderOptions =
-                new ServiceBusMessageAddOptions();
-
-            serviceBusMessageSenderOptions.ConnectionString =
-                Environment.GetEnvironmentVariable("ServiceBusMessageAddOptions:ConnectionString");
+                new ServiceBusMessageAddOptions
+                {
+                    ConnectionString = Environment.GetEnvironmentVariable("ServiceBusMessageAddOptions:ConnectionString")
+                };
 
             builder.Services
                 .AddSingleton(serviceBusMessageSenderOptions);
 
-            //builder.Services
-            //    .AddSingleton<IMessageAdd, EventGridMessageAdd>();
+            // Settings for storage queue
+
+            var storageQueueMessageAddOptions =
+                new StorageQueueMessageAddOptions
+                {
+                    ConnectionString = Environment.GetEnvironmentVariable("StorageQueueMessageAddOptions:ConnectionString")
+                };
+
             builder.Services
-                .AddSingleton<IMessageAdd, EventHubMessageAdd>();
+                .AddSingleton(storageQueueMessageAddOptions);
+
+            // Choose your add message service
+
+            builder.Services
+                .AddSingleton<IMessageAdd, EventGridMessageAdd>();
+            //builder.Services
+            //    .AddSingleton<IMessageAdd, EventHubMessageAdd>();
             //builder.Services
             //    .AddSingleton<IMessageAdd, ServiceBusMessageAdd>();
             //builder.Services
             //    .AddSingleton<IMessageAdd, StorageQueueMessageAdd>();
+            //builder.Services
+            //    .AddSingleton<IMessageAdd, FakeMessageAdd>();
         }
     }
 }
